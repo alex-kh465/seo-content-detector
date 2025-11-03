@@ -116,7 +116,3 @@ seo-content-detector/
 ├── requirements.txt
 └── README.md
 ```
-
-## License
-
-MIT
