@@ -8,12 +8,20 @@ This project provides an end-to-end pipeline for analyzing web content quality t
 
 ## Features
 
+### Core Analysis
 - **HTML Parsing**: Extract clean text from HTML content
 - **NLP Analysis**: Compute readability scores, keyword extraction, and semantic embeddings
 - **Duplicate Detection**: Identify near-duplicate content using cosine similarity (threshold: 0.80)
 - **Quality Classification**: RandomForest model trained on synthetic labels (High/Medium/Low)
 - **Real-Time Analysis**: Live URL scraping and instant quality assessment
 - **Interactive Dashboard**: Clean Streamlit UI with metrics, flags, and similarity tables
+
+### Advanced NLP Features
+- **Sentiment Analysis**: VADER-based sentiment scoring with positive/negative/neutral classification
+- **Named Entity Recognition**: Extract and categorize people, organizations, locations, and other entities
+- **Topic Modeling**: LDA-based unsupervised topic discovery across content
+- **Enhanced Keyword Extraction**: TF-IDF with bigrams for improved keyword identification
+- **Comprehensive Visualizations**: Word clouds, similarity heatmaps, feature distributions, confusion matrices
 
 ## Setup Instructions
 
@@ -64,11 +72,27 @@ Open `notebooks/seo_pipeline.ipynb` to run the complete pipeline interactively.
 
 ## Results Summary
 
-- **Model Accuracy**: ~85-90% on test set (varies by dataset)
-- **F1 Score**: ~0.85 (weighted average)
-- **Baseline Improvement**: +8% accuracy over rule-based predictor
-- **Feature Importance**: word_count (45%), flesch_reading_ease (35%), sentence_count (20%)
-- **Duplicate Detection**: Threshold 0.80 identifies high-similarity pairs with <5% false positive rate
+### Model Performance (81 pages, 70/30 split)
+- **Dataset Distribution**: 49 Low, 18 Medium, 14 High quality pages
+- **RandomForest Accuracy**: 92.0% on test set
+- **F1 Score**: 0.91 (weighted average)
+- **Baseline Accuracy**: 68.0% (rule-based predictor)
+- **Improvement**: +24.0% accuracy, +23.1% F1 score over baseline
+
+### Feature Importance
+- **Flesch Reading Ease**: 40.2% (most important)
+- **Word Count**: 30.5%
+- **Sentence Count**: 29.3%
+
+### Per-Class Performance
+- **High Quality**: Precision 1.00, Recall 0.50, F1 0.67
+- **Medium Quality**: Precision 0.75, Recall 1.00, F1 0.86
+- **Low Quality**: Precision 1.00, Recall 1.00, F1 1.00
+
+### Duplicate Detection
+- Threshold 0.80 identifies high-similarity pairs
+- Cosine similarity computed on 384-dimensional embeddings
+- Thin content detection: <500 words flagged
 
 ## Limitations
 
