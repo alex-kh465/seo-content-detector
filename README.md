@@ -28,7 +28,7 @@ This project provides an end-to-end pipeline for analyzing web content quality t
 ```bash
 git https://github.com/alex-kh465/seo-content-detector
 cd seo-content-detector
-uv pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 **Run the pipeline:**
