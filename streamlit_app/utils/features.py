@@ -18,6 +18,11 @@ try:
 except LookupError:
     nltk.download('punkt', quiet=True)
 
+try:
+    nltk.data.find('tokenizers/punkt_tab')
+except LookupError:
+    nltk.download('punkt_tab', quiet=True)
+
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize
 
@@ -79,16 +84,32 @@ def extract_features(text):
             'flesch_reading_ease': 0.0
         }
     
+    # Initialize with zeros
+    word_count = 0
+    sentence_count = 0
+    flesch_score = 0.0
+    
     try:
         # Word count
         word_count = len(text.split())
         
-        # Sentence count
-        sentences = sent_tokenize(text)
-        sentence_count = len(sentences)
+        # Sentence count - try multiple tokenizers
+        try:
+            sentences = sent_tokenize(text)
+            sentence_count = len(sentences)
+        except Exception as e:
+            # Fallback: count by periods
+            sentence_count = text.count('.') + text.count('!') + text.count('?')
+            if sentence_count == 0:
+                sentence_count = 1
         
         # Flesch reading ease
-        flesch_score = textstat.flesch_reading_ease(text)
+        try:
+            if word_count > 0:
+                flesch_score = textstat.flesch_reading_ease(text)
+        except Exception as e:
+            # Fallback calculation if textstat fails
+            flesch_score = 0.0
         
         return {
             'word_count': word_count,
@@ -98,10 +119,11 @@ def extract_features(text):
     
     except Exception as e:
         print(f"Error extracting features: {str(e)}")
+        # Return what we calculated so far
         return {
-            'word_count': 0,
-            'sentence_count': 0,
-            'flesch_reading_ease': 0.0
+            'word_count': word_count,
+            'sentence_count': max(sentence_count, 1) if word_count > 0 else 0,
+            'flesch_reading_ease': round(flesch_score, 2)
         }
 
 

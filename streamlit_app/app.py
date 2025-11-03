@@ -106,8 +106,11 @@ def analyze_url(url, model, dataset_embeddings, dataset_urls):
     body_text = extracted['body_text']
     word_count = extracted['word_count']
     
-    if word_count == 0:
-        st.warning("No text content found on the page.")
+    # Debug info
+    if not body_text or word_count == 0:
+        st.warning("No text content found on the page. The page might be JavaScript-heavy or blocked.")
+        st.info(f"Extracted title: {extracted.get('title', 'None')}")
+        st.info(f"HTML length: {len(html_content)} characters")
         return None
     
     # Extract features
@@ -148,7 +151,8 @@ def analyze_url(url, model, dataset_embeddings, dataset_urls):
         'readability': features['flesch_reading_ease'],
         'quality_label': quality_label,
         'is_thin': is_thin,
-        'similar_to': similar_pages
+        'similar_to': similar_pages,
+        'body_preview': body_text[:500] if body_text else ''
     }
 
 
@@ -258,6 +262,9 @@ def main():
                 with st.expander("Page Details"):
                     st.markdown(f"**Title:** {result['title']}")
                     st.markdown(f"**URL:** {result['url']}")
+                    if 'body_preview' in result:
+                        st.markdown(f"**Text Preview (first 500 chars):**")
+                        st.text(result['body_preview'][:500])
     
     # Sidebar - Information
     with st.sidebar:
